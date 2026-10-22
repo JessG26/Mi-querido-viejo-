@@ -18,10 +18,12 @@
             sans: ['Inter', 'sans-serif'],
           },
           colors: {
-            fondo: '#090d14',
-            tarjeta: '#121824',
-            borde: '#1e293b',
-            oro: {
+            fondo: '#0d1117',
+            superficie: '#161b22',
+            tarjeta: '#1f2937',
+            linea: '#30363d',
+            dorado: {
+              300: '#fcd34d',
               400: '#fbbf24',
               500: '#f59e0b',
               600: '#d97706',
@@ -33,167 +35,65 @@
   </script>
   <style>
     body {
-      background-color: #090d14;
-      color: #f1f5f9;
+      background-color: #0d1117;
+      color: #e6edf3;
       font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-    }
-    .texto-degrade-oro {
-      background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
     .linea-tiempo::before {
       content: '';
       position: absolute;
-      top: 14px;
-      bottom: 20px;
+      top: 12px;
+      bottom: 24px;
       left: 17px;
       width: 2px;
-      background: linear-gradient(to bottom, #f59e0b 0%, #3b82f6 50%, #10b981 100%);
+      background: linear-gradient(to bottom, #f59e0b 0%, #38bdf8 60%, #10b981 100%);
       opacity: 0.35;
     }
-    @keyframes barWave {
-      0%, 100% { height: 4px; }
-      50% { height: 16px; }
+    .tarjeta-destacada {
+      transition: all 0.25s ease;
     }
-    .wave-bar {
-      width: 3px;
-      background-color: #f59e0b;
-      border-radius: 2px;
-      display: inline-block;
-      animation: barWave 1.2s ease-in-out infinite;
+    .tarjeta-destacada.seleccionada {
+      border-color: #f59e0b !important;
+      background-color: #1c2128 !important;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
     }
-    .wave-bar:nth-child(2) { animation-delay: 0.2s; }
-    .wave-bar:nth-child(3) { animation-delay: 0.4s; }
-    .wave-bar:nth-child(4) { animation-delay: 0.1s; }
   </style>
 </head>
-<body class="min-h-screen relative selection:bg-amber-500 selection:text-black">
+<body class="min-h-screen selection:bg-amber-500 selection:text-black">
 
-  <!-- ==========================================
-       1. PANTALLA DE BIENVENIDA (INFALIBLE)
-       ========================================== -->
-  <div id="pantalla-bienvenida" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#090d14] transition-opacity duration-500">
-    <div class="max-w-md w-full bg-[#121824] border border-amber-500/30 rounded-3xl p-6 sm:p-8 text-center shadow-2xl relative">
-      
-      <div class="w-14 h-14 mx-auto rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl mb-4 text-amber-400">
-        🕊️
-      </div>
+  <main class="max-w-xl mx-auto px-4 py-8 sm:py-12">
 
-      <h1 class="text-2xl sm:text-3xl font-extrabold texto-degrade-oro tracking-tight mb-1">
-        El Fundador
-      </h1>
-      <p class="text-xs text-amber-300/80 font-medium tracking-wider uppercase mb-5">
-        Para toda la familia y amigos
-      </p>
-
-      <!-- Mensaje sincrónico inmediato (nunca se queda en blanco o cargando) -->
-      <div class="bg-black/50 border border-slate-800 rounded-2xl p-4 sm:p-5 mb-6 min-h-[85px] flex items-center justify-center">
-        <p id="frase-bienvenida-texto" class="text-amber-100 italic text-sm sm:text-base leading-relaxed">
-          «Poco a poco, la paciencia es el arte de encontrar lo deseado ok. 🤲✨»
-        </p>
-      </div>
-
-      <!-- BOTÓN DE ENTRADA CON RESPUESTA INMEDIATA -->
-      <button id="btn-entrar-sitio" type="button" onclick="entrarAlSitio()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-slate-950 font-bold text-base transition-all transform active:scale-95 shadow-lg shadow-amber-950/40 cursor-pointer flex items-center justify-center gap-2">
-        <span>Tocar para entrar</span>
-        <span>✨</span>
-      </button>
-
-      <div class="text-[11px] text-slate-500 mt-4">
-        Un espacio de encuentro, memoria y amor compartido.
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================
-       BARRA FLOTANTE: CONTROL DE AUDIO AMBIENTAL
-       ========================================== -->
-  <div class="fixed bottom-5 right-4 z-40 flex flex-col items-end gap-2.5">
-    <div class="flex items-center gap-2.5 bg-[#121824]/95 border border-slate-700/80 rounded-full px-3.5 py-2 shadow-2xl backdrop-blur-md">
-      <button onclick="toggleAudioAmbiente()" class="flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-amber-300 transition" id="btn-audio-control" title="Pausar o reproducir música">
-        <div id="animacion-ondas" class="flex items-center gap-0.5 h-4">
-          <span class="wave-bar"></span>
-          <span class="wave-bar"></span>
-          <span class="wave-bar"></span>
-          <span class="wave-bar"></span>
-        </div>
-        <span id="texto-estado-audio">Música activa</span>
-      </button>
-
-      <span class="w-px h-3.5 bg-slate-700"></span>
-
-      <input type="range" min="0" max="1" step="0.05" value="0.4" id="slider-volumen" oninput="ajustarVolumen(this.value)" class="w-14 accent-amber-500 cursor-pointer" title="Volumen ambiental">
-    </div>
-
-    <!-- Botón flotante para pedir otra bendición -->
-    <button onclick="abrirModalBendicion()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-full shadow-lg text-xs transition transform hover:-translate-y-0.5 active:scale-95 flex items-center gap-1.5 cursor-pointer">
-      <span>✨ Bendición del día</span>
-    </button>
-  </div>
-
-  <!-- ==========================================
-       MODAL DE BENDICIÓN INTERACTIVA
-       ========================================== -->
-  <div id="modal-bendicion" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-[#121824] border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
-      <div class="w-10 h-10 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3 text-lg border border-amber-500/20">
-        ✨
-      </div>
-      <h3 class="text-base font-bold text-amber-400 mb-1">Palabra del Fundador</h3>
-      <p class="text-xs text-slate-400 mb-4">Para acompañarnos hoy</p>
-      
-      <div class="bg-black/50 border border-slate-800 rounded-2xl p-4 mb-5">
-        <p id="texto-bendicion-modal" class="text-slate-100 italic text-sm sm:text-base leading-relaxed">
-          «Poco a poco, la paciencia es el arte de encontrar lo deseado ok. 🤲✨»
-        </p>
-      </div>
-
-      <div class="flex gap-2">
-        <button type="button" onclick="cambiarBendicion()" class="flex-1 py-2.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold text-xs rounded-xl border border-amber-500/30 transition cursor-pointer">
-          Otra palabra 🎲
-        </button>
-        <button type="button" onclick="cerrarModalBendicion()" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs rounded-xl transition cursor-pointer">
-          Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================
-       CONTENIDO PRINCIPAL
-       ========================================== -->
-  <main class="max-w-xl mx-auto px-4 pt-8 pb-32">
-
-    <!-- CABECERA PRINCIPAL -->
+    <!-- ==========================================
+         CABECERA / HERO
+         ========================================== -->
     <header class="text-center mb-8">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold mb-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-semibold mb-3">
         <span>🕊️</span>
         <span>Homenaje y Memoria</span>
       </div>
 
-      <h1 class="text-3xl sm:text-4xl font-extrabold texto-degrade-oro tracking-tight mb-2">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
         El Fundador
       </h1>
 
-      <!-- BLOQUE DE APODOS CARIÑOSOS -->
-      <div class="flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-300 max-w-sm mx-auto mb-4">
-        <span class="text-slate-400">Recordado por siempre como:</span>
+      <!-- APODOS CON RESPETO Y AFECTO -->
+      <div class="flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-300 max-w-sm mx-auto mb-3">
+        <span class="text-slate-400">Siempre recordado como:</span>
         <div class="flex flex-wrap justify-center gap-1.5 mt-1">
-          <span class="px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-amber-300 font-medium">«Mareo»</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-amber-300 font-medium">«Comando»</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-amber-300 font-medium">«Comandante»</span>
-          <span class="px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-amber-300 font-medium">«Curso»</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-amber-300 font-medium">«Mareo»</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-amber-300 font-medium">«Comando»</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-amber-300 font-medium">«Comandante»</span>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#161b22] border border-[#30363d] text-amber-300 font-medium">«Curso»</span>
         </div>
       </div>
 
-      <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto leading-relaxed mb-5">
-        Para sus hijos, su compañera de vida, sus hermanos y toda la familia y amistades que llevan su recuerdo intacto en el corazón.
+      <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto leading-relaxed mb-6">
+        Un tributo para toda la familia: sus hijos, su compañera de vida, hermanos, amigos y seres queridos que llevan su presencia intacta en el corazón.
       </p>
 
-      <!-- Frase Insignia -->
-      <div class="bg-[#121824] border-l-4 border-amber-500 rounded-r-2xl p-4 text-left shadow-lg">
+      <!-- FRASE INSIGNIA -->
+      <div class="bg-[#161b22] border-l-4 border-amber-500 rounded-r-2xl p-4 text-left shadow-lg border-y border-r border-[#30363d]/60">
         <p class="text-amber-100 text-sm italic font-medium leading-relaxed">
           «Poco a poco, la paciencia es el arte de encontrar lo deseado ok. 🤲✨»
         </p>
@@ -201,54 +101,77 @@
       </div>
     </header>
 
-    <!-- ENSEÑANZAS Y EXPRESIONES TÍPICAS -->
+    <!-- ==========================================
+         SECCIÓN DE ENSEÑANZAS Y BENDICIÓN INTERACTIVA
+         ========================================== -->
     <section class="mb-10">
-      <div class="flex items-center gap-2 mb-3.5">
-        <span class="text-lg">✨</span>
-        <h2 class="text-base font-bold text-slate-100">
-          Sus Enseñanzas y Expresiones Típicas
-        </h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3.5">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">✨</span>
+          <h2 class="text-base font-bold text-slate-100">
+            Enseñanzas y Expresiones Típicas
+          </h2>
+        </div>
+
+        <!-- Botón interactivo en página -->
+        <button type="button" onclick="destacarFraseAleatoria()" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-semibold transition active:scale-95 cursor-pointer">
+          <span>🎲 Bendición al azar</span>
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        <div class="bg-[#121824] border border-slate-800 rounded-2xl p-3.5">
+      <!-- Cuadro de bendición activa -->
+      <div id="caja-bendicion-activa" class="bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/25 rounded-2xl p-3.5 mb-3 flex items-start gap-3">
+        <span class="text-lg">💬</span>
+        <div class="flex-1">
+          <div class="text-[11px] font-semibold text-amber-400 uppercase tracking-wider">Bendición seleccionada</div>
+          <p id="texto-bendicion-dinamica" class="text-xs sm:text-sm text-slate-200 italic mt-0.5">
+            Toca el botón «Bendición al azar» para resaltar una enseñanza hoy.
+          </p>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de tarjetas -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="contenedor-frases">
+        <div class="tarjeta-destacada bg-[#161b22] border border-[#30363d] rounded-2xl p-3.5" data-frase="«Operación hormiga 🐜»">
           <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Constancia diaria</div>
           <div class="text-sm font-bold text-amber-300">«Operación hormiga 🐜»</div>
         </div>
 
-        <div class="bg-[#121824] border border-slate-800 rounded-2xl p-3.5">
+        <div class="tarjeta-destacada bg-[#161b22] border border-[#30363d] rounded-2xl p-3.5" data-frase="«Dios y punto ☝️»">
           <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Fe inquebrantable</div>
           <div class="text-sm font-bold text-amber-300">«Dios y punto ☝️»</div>
         </div>
 
-        <div class="bg-[#121824] border border-slate-800 rounded-2xl p-3.5">
+        <div class="tarjeta-destacada bg-[#161b22] border border-[#30363d] rounded-2xl p-3.5" data-frase="«Poco a poco, la paciencia es el arte de encontrar lo deseado ok 🤲✨»">
           <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Paciencia y calma</div>
-          <div class="text-xs font-medium text-amber-200/90 italic">«Poco a poco... la idea es descansar ok »</div>
+          <div class="text-xs font-medium text-amber-200/90 italic">«Poco a poco, la paciencia es el arte de encontrar lo deseado ok 🤲✨»</div>
         </div>
 
-        <div class="bg-[#121824] border border-slate-800 rounded-2xl p-3.5">
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Aprobación y confianza</div>
+        <div class="tarjeta-destacada bg-[#161b22] border border-[#30363d] rounded-2xl p-3.5" data-frase="«Positivo. Aprobado ⛺»">
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Confirmación y confianza</div>
           <div class="text-sm font-bold text-emerald-400">«Positivo. Aprobado ⛺»</div>
         </div>
 
-        <div class="bg-[#121824] border border-slate-800 rounded-2xl p-3.5">
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Siempre presente</div>
+        <div class="tarjeta-destacada bg-[#161b22] border border-[#30363d] rounded-2xl p-3.5" data-frase="«Activo por esta vía 📲»">
+          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Su presencia siempre</div>
           <div class="text-sm font-bold text-sky-400">«Activo por esta vía 📲»</div>
         </div>
 
-        <div class="bg-[#121824] border border-slate-800 rounded-2xl p-3.5">
+        <div class="tarjeta-destacada bg-[#161b22] border border-[#30363d] rounded-2xl p-3.5" data-frase="«Recuerde que yo no soy chusmero y rumbero Ji Ji»">
           <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Sentido del humor</div>
           <div class="text-xs font-medium text-amber-200/90 italic">«Recuerde que yo no soy chusmero y rumbero Ji Ji»</div>
         </div>
       </div>
     </section>
 
-    <!-- LÍNEA DE TIEMPO INTERACTIVA -->
+    <!-- ==========================================
+         LÍNEA DE TIEMPO: RECUERDOS Y CONVERSACIONES
+         ========================================== -->
     <section>
       <div class="flex items-center gap-2 mb-5">
         <span class="text-lg">🎙️</span>
         <h2 class="text-base font-bold text-slate-100">
-          Momentos, Conversaciones y Recuerdos
+          Recuerdos y Conversaciones
         </h2>
       </div>
 
@@ -256,28 +179,27 @@
 
         <!-- MOMENTO 1: 23 DE JUNIO -->
         <div class="relative">
-          <div class="absolute -left-7 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-amber-400 bg-slate-950 flex items-center justify-center">
+          <div class="absolute -left-7 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-amber-400 bg-[#0d1117] flex items-center justify-center">
             <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
           </div>
 
-          <div class="bg-[#121824] border border-slate-800 rounded-2xl p-4 shadow-sm">
+          <div class="bg-[#161b22] border border-[#30363d] rounded-2xl p-4 shadow-sm">
             <div class="flex justify-between items-start gap-2 mb-2">
               <h3 class="text-sm sm:text-base font-bold text-slate-100">Mañana de Fe y Saludos</h3>
-              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-amber-300 border border-slate-700">
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#0d1117] text-amber-300 border border-[#30363d]">
                 23 JUN 2025
               </span>
             </div>
 
-            <div class="p-3 bg-black/40 rounded-xl border border-slate-800 mb-3 text-xs text-slate-300 italic">
+            <div class="p-3 bg-[#0d1117] rounded-xl border border-[#30363d]/70 mb-3 text-xs text-slate-300 italic">
               «Buenos días hijo, que Dios lo bendiga...»
             </div>
 
-            <!-- Audio Papá -->
             <div class="mb-3">
               <div class="text-xs font-semibold text-amber-400 mb-1 flex items-center gap-1.5">
-                <span>🎙️ Nota de voz de Papá</span>
+                <span>🎙️ Nota de voz de Papá (23 de Junio)</span>
               </div>
-              <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+              <div class="bg-[#0d1117] p-2 rounded-xl border border-[#30363d]">
                 <audio controls class="w-full h-9 rounded-lg">
                   <source src="audio_papa_23jun.mp3" type="audio/mpeg">
                   Tu navegador no soporta el audio.
@@ -285,105 +207,102 @@
               </div>
             </div>
 
-            <!-- Audio Respuesta -->
-            <div class="mb-3">
+            <div>
               <div class="text-xs font-semibold text-sky-400 mb-1 flex items-center gap-1.5">
-                <span>🗣️ Respuesta</span>
+                <span>🗣️ Tu Respuesta (23 de Junio)</span>
               </div>
-              <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+              <div class="bg-[#0d1117] p-2 rounded-xl border border-[#30363d]">
                 <audio controls class="w-full h-9 rounded-lg">
                   <source src="audio_respuesta_23jun.mp3" type="audio/mpeg">
                   Tu navegador no soporta el audio.
                 </audio>
               </div>
             </div>
-
-            <!-- Fotos del día -->
-            <div class="text-xs font-semibold text-slate-400 mb-1.5">🖼️ Fotografías de la jornada</div>
-            <div class="grid grid-cols-2 gap-2">
-              <div class="rounded-xl overflow-hidden border border-slate-800 aspect-square">
-                <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80" alt="Jornada en postes" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/1e293b/f59e0b?text=Jornada+1'">
-              </div>
-              <div class="rounded-xl overflow-hidden border border-slate-800 aspect-square">
-                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Trabajo en postes" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/1e293b/f59e0b?text=Jornada+2'">
-              </div>
-            </div>
           </div>
         </div>
 
-        <!-- MOMENTO 2: 26 DE JUNIO -->
+        <!-- MOMENTO 2: 26 DE JUNIO (TRABAJO EN FIBRA / POSTES) -->
         <div class="relative">
-          <div class="absolute -left-7 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-sky-400 bg-slate-950 flex items-center justify-center">
+          <div class="absolute -left-7 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-sky-400 bg-[#0d1117] flex items-center justify-center">
             <div class="w-1.5 h-1.5 rounded-full bg-sky-400"></div>
           </div>
 
-          <div class="bg-[#121824] border border-slate-800 rounded-2xl p-4 shadow-sm">
+          <div class="bg-[#161b22] border border-[#30363d] rounded-2xl p-4 shadow-sm">
             <div class="flex justify-between items-start gap-2 mb-2">
-              <h3 class="text-sm sm:text-base font-bold text-slate-100">Trabajo, Risas y Compartir</h3>
-              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-sky-300 border border-slate-700">
+              <h3 class="text-sm sm:text-base font-bold text-slate-100">Jornada de Trabajo y Anécdotas</h3>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#0d1117] text-sky-300 border border-[#30363d]">
                 26 JUN 2025
               </span>
             </div>
 
-            <div class="p-3 bg-black/40 rounded-xl border border-slate-800 mb-3 text-xs text-slate-300">
-              Un día de videos, anécdotas y buen humor compartido entre familia y compañeros.
+            <div class="p-3 bg-[#0d1117] rounded-xl border border-[#30363d]/70 mb-3 text-xs text-slate-300">
+              Un día entero de trabajo, videos en los postes, fotos y buen humor entre los dos.
             </div>
 
-            <div class="mb-3">
-              <div class="text-xs font-semibold text-slate-400 mb-1">📹 Video compartido (Mañana)</div>
-              <div class="rounded-xl overflow-hidden border border-slate-800 bg-black">
-                <video controls poster="https://placehold.co/600x340/111827/f59e0b?text=Video+Mañana" class="w-full max-h-52 object-cover">
-                  <source src="video_trabajo_manana.mp4" type="video/mp4">
-                  Tu navegador no soporta el video.
-                </video>
+            <!-- Videos con poster integrado -->
+            <div class="space-y-3 mb-3">
+              <div>
+                <div class="text-xs font-semibold text-slate-400 mb-1">📹 Video compartido (Mañana)</div>
+                <div class="rounded-xl overflow-hidden border border-[#30363d] bg-black">
+                  <video controls poster="https://placehold.co/600x340/161b22/f59e0b?text=Video+Trabajo+(Mañana)" class="w-full max-h-52 object-cover">
+                    <source src="video_trabajo_manana.mp4" type="video/mp4">
+                    Tu navegador no soporta el video.
+                  </video>
+                </div>
+              </div>
+
+              <div>
+                <div class="text-xs font-semibold text-slate-400 mb-1">📹 Video compartido (Tarde)</div>
+                <div class="rounded-xl overflow-hidden border border-[#30363d] bg-black">
+                  <video controls poster="https://placehold.co/600x340/161b22/38bdf8?text=Video+Trabajo+(Tarde)" class="w-full max-h-52 object-cover">
+                    <source src="video_trabajo_tarde.mp4" type="video/mp4">
+                    Tu navegador no soporta el video.
+                  </video>
+                </div>
               </div>
             </div>
 
-            <div class="mb-3">
-              <div class="text-xs font-semibold text-slate-400 mb-1">📹 Video compartido (Tarde)</div>
-              <div class="rounded-xl overflow-hidden border border-slate-800 bg-black">
-                <video controls poster="https://placehold.co/600x340/111827/38bdf8?text=Video+Tarde" class="w-full max-h-52 object-cover">
-                  <source src="video_trabajo_tarde.mp4" type="video/mp4">
-                  Tu navegador no soporta el video.
-                </video>
+            <!-- Galería de fotos en postes / faena -->
+            <div class="text-xs font-semibold text-slate-400 mb-1.5">🖼️ Fotos compartidas de la jornada</div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="rounded-xl overflow-hidden border border-[#30363d] aspect-square bg-[#0d1117]">
+                <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80" alt="Trabajo en postes" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/161b22/f59e0b?text=Poste+1'">
               </div>
-            </div>
-
-            <div class="bg-black/40 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs text-slate-300">
-              <span>Pegatina típica: «¡Hay que investigar eso!»</span>
-              <span class="text-base">🕵️‍♂️</span>
+              <div class="rounded-xl overflow-hidden border border-[#30363d] aspect-square bg-[#0d1117]">
+                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Trabajo telecomunicaciones" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/161b22/f59e0b?text=Poste+2'">
+              </div>
             </div>
           </div>
         </div>
 
         <!-- MOMENTO 3: 29 DE JUNIO (CUMPLEAÑOS) -->
         <div class="relative">
-          <div class="absolute -left-7 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-amber-400 bg-slate-950 flex items-center justify-center">
+          <div class="absolute -left-7 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-amber-400 bg-[#0d1117] flex items-center justify-center">
             <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
           </div>
 
-          <div class="bg-[#141b27] border-2 border-amber-500/40 rounded-2xl p-4 shadow-lg">
+          <div class="bg-[#161b22] border-2 border-amber-500/40 rounded-2xl p-4 shadow-lg">
             <div class="flex justify-between items-start gap-2 mb-2">
               <div>
-                <span class="inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase mb-0.5">
+                <span class="inline-block px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 text-[10px] font-bold uppercase mb-0.5">
                   Celebración
                 </span>
                 <h3 class="text-sm sm:text-base font-bold text-amber-300">Día de Cumpleaños</h3>
               </div>
-              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#0d1117] text-amber-300 border border-amber-500/30">
                 29 JUN 2025
               </span>
             </div>
 
-            <div class="p-3 bg-black/50 rounded-xl border border-amber-500/30 mb-3 text-xs text-slate-200 leading-relaxed">
+            <div class="p-3 bg-[#0d1117] rounded-xl border border-amber-500/30 mb-3 text-xs text-slate-200 leading-relaxed">
               «GRACIAS DIOS POR EXISTIR. Hoy es un día especial "Querido hijo JHOIVER", te deseo toda la felicidad, salud y amor del universo. Feliz cumpleaños 🎂 Te quiero mucho hijo. MIL BENDICIONES»
             </div>
 
             <div class="mb-3">
               <div class="text-xs font-semibold text-amber-300 mb-1 flex items-center gap-1.5">
-                <span>🎉 Audio de felicitación</span>
+                <span>🎉 Audio de felicitación (29 de Junio)</span>
               </div>
-              <div class="bg-black/60 p-2 rounded-xl border border-amber-500/30">
+              <div class="bg-[#0d1117] p-2 rounded-xl border border-amber-500/30">
                 <audio controls class="w-full h-9 rounded-lg">
                   <source src="audio_cumple_29jun.mp3" type="audio/mpeg">
                   Tu navegador no soporta el audio.
@@ -393,8 +312,8 @@
 
             <div>
               <div class="text-xs font-semibold text-slate-300 mb-1">📸 Foto de la noche</div>
-              <div class="rounded-xl overflow-hidden border border-slate-700 aspect-video">
-                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" alt="Celebración familiar" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x340/1f2937/f59e0b?text=Celebración+Familiar'">
+              <div class="rounded-xl overflow-hidden border border-[#30363d] aspect-video bg-[#0d1117]">
+                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" alt="Celebración familiar" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x340/161b22/f59e0b?text=Celebración+Familiar'">
               </div>
             </div>
           </div>
@@ -402,4 +321,81 @@
 
         <!-- MOMENTO 4: 03 - 11 DE JULIO -->
         <div class="relative">
-          <div cl
+          <div class="absolute -left-7 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-emerald-400 bg-[#0d1117] flex items-center justify-center">
+            <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+          </div>
+
+          <div class="bg-[#161b22] border border-[#30363d] rounded-2xl p-4 shadow-sm">
+            <div class="flex justify-between items-start gap-2 mb-2">
+              <h3 class="text-sm sm:text-base font-bold text-slate-100">Cariño Cotidiano y Saludos</h3>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#0d1117] text-emerald-300 border border-[#30363d]">
+                03 - 11 JUL 2025
+              </span>
+            </div>
+
+            <div class="p-3 bg-[#0d1117] rounded-xl border border-[#30363d]/70 mb-3 text-xs text-slate-300 italic">
+              «Por aquí gracias a Dios todo bien... Activo por esta vía. Mil bendiciones 🙏»
+            </div>
+
+            <div>
+              <div class="text-xs font-semibold text-emerald-400 mb-1">🔊 Nota de voz de la semana</div>
+              <div class="bg-[#0d1117] p-2 rounded-xl border border-[#30363d]">
+                <audio controls class="w-full h-9 rounded-lg">
+                  <source src="audio_semana_julio.mp3" type="audio/mpeg">
+                  Tu navegador no soporta el audio.
+                </audio>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         DEDICATORIA FAMILIAR Y CIERRE
+         ========================================== -->
+    <section class="mt-12 text-center">
+      <div class="bg-gradient-to-b from-[#161b22] to-[#0d1117] border border-amber-500/25 rounded-3xl p-6 sm:p-7 shadow-xl">
+        <div class="text-2xl mb-2 text-amber-400">🕊️</div>
+        <h3 class="text-lg font-bold text-amber-300 mb-2">
+          Su Legado en Cada Uno de Nosotros
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md mx-auto mb-4">
+          Para tu compañera de vida que caminó a tu lado, tus hijos que honran tu esfuerzo diario, tus hermanos con quienes compartiste una vida entera y todos aquellos que te recuerdan con el respeto y la lealtad de un verdadero compañero.
+        </p>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold">
+          <span>Por siempre en nuestra memoria</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="mt-10 text-center text-xs text-slate-500">
+      <p>«Poco a poco, la paciencia es el arte de encontrar lo deseado ok. 🤲»</p>
+    </footer>
+
+  </main>
+
+  <!-- LÓGICA MÍNIMA EN LÍNEA (SIN BLOQUEOS NI MODALES) -->
+  <script>
+    function destacarFraseAleatoria() {
+      const tarjetas = document.querySelectorAll('.tarjeta-destacada');
+      const textoDinamico = document.getElementById('texto-bendicion-dinamica');
+      if (!tarjetas.length) return;
+
+      // Quitar selección previa
+      tarjetas.forEach(t => t.classList.remove('seleccionada'));
+
+      // Elegir una tarjeta al azar
+      const indexAzar = Math.floor(Math.random() * tarjetas.length);
+      const seleccionada = tarjetas[indexAzar];
+
+      // Aplicar estilos destacados
+      seleccionada.classList.add('seleccionada');
+      seleccionada.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Actualizar el texto superior
+      const frase = seleccionada.getAttribute('data-frase');
+      if (textoDinamico && frase) {
+        textoD
