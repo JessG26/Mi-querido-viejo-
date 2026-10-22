@@ -53,7 +53,6 @@
       background: linear-gradient(to bottom, #f59e0b 0%, #3b82f6 50%, #10b981 100%);
       opacity: 0.35;
     }
-    /* Animación de ondas de audio activas */
     @keyframes barWave {
       0%, 100% { height: 4px; }
       50% { height: 16px; }
@@ -73,9 +72,9 @@
 <body class="min-h-screen relative selection:bg-amber-500 selection:text-black">
 
   <!-- ==========================================
-       1. PANTALLA DE BIENVENIDA (UN SOLO BOTÓN DE ACCESO)
+       1. PANTALLA DE BIENVENIDA (INFALIBLE)
        ========================================== -->
-  <div id="pantalla-bienvenida" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#090d14] transition-opacity duration-700">
+  <div id="pantalla-bienvenida" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#090d14] transition-opacity duration-500">
     <div class="max-w-md w-full bg-[#121824] border border-amber-500/30 rounded-3xl p-6 sm:p-8 text-center shadow-2xl relative">
       
       <div class="w-14 h-14 mx-auto rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-2xl mb-4 text-amber-400">
@@ -89,16 +88,16 @@
         Para toda la familia y amigos
       </p>
 
-      <!-- Mensaje / Bendición Aleatoria al Entrar -->
+      <!-- Mensaje sincrónico inmediato (nunca se queda en blanco o cargando) -->
       <div class="bg-black/50 border border-slate-800 rounded-2xl p-4 sm:p-5 mb-6 min-h-[85px] flex items-center justify-center">
         <p id="frase-bienvenida-texto" class="text-amber-100 italic text-sm sm:text-base leading-relaxed">
-          Cargando bendición...
+          «Poco a poco, la paciencia es el arte de encontrar lo deseado ok. 🤲✨»
         </p>
       </div>
 
-      <!-- ÚNICO BOTÓN DE ENTRADA (Inicia audio automáticamente de forma infalible) -->
-      <button onclick="entrarAlSitio()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-slate-950 font-bold text-base transition-all transform active:scale-95 shadow-lg shadow-amber-950/40 cursor-pointer flex items-center justify-center gap-2">
-        <span>Ingresar y escuchar</span>
+      <!-- BOTÓN DE ENTRADA CON RESPUESTA INMEDIATA -->
+      <button id="btn-entrar-sitio" type="button" onclick="entrarAlSitio()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-slate-950 font-bold text-base transition-all transform active:scale-95 shadow-lg shadow-amber-950/40 cursor-pointer flex items-center justify-center gap-2">
+        <span>Tocar para entrar</span>
         <span>✨</span>
       </button>
 
@@ -112,26 +111,24 @@
        BARRA FLOTANTE: CONTROL DE AUDIO AMBIENTAL
        ========================================== -->
   <div class="fixed bottom-5 right-4 z-40 flex flex-col items-end gap-2.5">
-    <!-- Reproductor ambiental integrado -->
     <div class="flex items-center gap-2.5 bg-[#121824]/95 border border-slate-700/80 rounded-full px-3.5 py-2 shadow-2xl backdrop-blur-md">
-      <button onclick="toggleAudioAmbiente()" class="flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-amber-300 transition" id="btn-audio-control" title="Pausar o Reproducir música">
+      <button onclick="toggleAudioAmbiente()" class="flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-amber-300 transition" id="btn-audio-control" title="Pausar o reproducir música">
         <div id="animacion-ondas" class="flex items-center gap-0.5 h-4">
           <span class="wave-bar"></span>
           <span class="wave-bar"></span>
           <span class="wave-bar"></span>
           <span class="wave-bar"></span>
         </div>
-        <span id="texto-estado-audio">Música de fondo</span>
+        <span id="texto-estado-audio">Música activa</span>
       </button>
 
       <span class="w-px h-3.5 bg-slate-700"></span>
 
-      <!-- Control de volumen sutil -->
-      <input type="range" min="0" max="1" step="0.05" value="0.5" id="slider-volumen" oninput="ajustarVolumen(this.value)" class="w-14 accent-amber-500 cursor-pointer" title="Volumen ambiental">
+      <input type="range" min="0" max="1" step="0.05" value="0.4" id="slider-volumen" oninput="ajustarVolumen(this.value)" class="w-14 accent-amber-500 cursor-pointer" title="Volumen ambiental">
     </div>
 
     <!-- Botón flotante para pedir otra bendición -->
-    <button onclick="abrirModalBendicion()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-full shadow-lg text-xs transition transform hover:-translate-y-0.5 active:scale-95 flex items-center gap-1.5">
+    <button onclick="abrirModalBendicion()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-full shadow-lg text-xs transition transform hover:-translate-y-0.5 active:scale-95 flex items-center gap-1.5 cursor-pointer">
       <span>✨ Bendición del día</span>
     </button>
   </div>
@@ -139,7 +136,7 @@
   <!-- ==========================================
        MODAL DE BENDICIÓN INTERACTIVA
        ========================================== -->
-  <div id="modal-bendicion" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity">
+  <div id="modal-bendicion" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-[#121824] border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
       <div class="w-10 h-10 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3 text-lg border border-amber-500/20">
         ✨
@@ -154,10 +151,10 @@
       </div>
 
       <div class="flex gap-2">
-        <button onclick="cambiarBendicion()" class="flex-1 py-2.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold text-xs rounded-xl border border-amber-500/30 transition">
+        <button type="button" onclick="cambiarBendicion()" class="flex-1 py-2.5 px-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-semibold text-xs rounded-xl border border-amber-500/30 transition cursor-pointer">
           Otra palabra 🎲
         </button>
-        <button onclick="cerrarModalBendicion()" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs rounded-xl transition">
+        <button type="button" onclick="cerrarModalBendicion()" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs rounded-xl transition cursor-pointer">
           Cerrar
         </button>
       </div>
@@ -182,7 +179,7 @@
 
       <!-- BLOQUE DE APODOS CARIÑOSOS -->
       <div class="flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-300 max-w-sm mx-auto mb-4">
-        <span class="text-slate-400">Conocido y recordado con cariño como:</span>
+        <span class="text-slate-400">Recordado por siempre como:</span>
         <div class="flex flex-wrap justify-center gap-1.5 mt-1">
           <span class="px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-amber-300 font-medium">«Mareo»</span>
           <span class="px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-amber-300 font-medium">«Comando»</span>
@@ -209,7 +206,7 @@
       <div class="flex items-center gap-2 mb-3.5">
         <span class="text-lg">✨</span>
         <h2 class="text-base font-bold text-slate-100">
-          Sus Enseñanzas y Frases Típicas
+          Sus Enseñanzas y Expresiones Típicas
         </h2>
       </div>
 
@@ -404,4 +401,5 @@
         </div>
 
         <!-- MOMENTO 4: 03 - 11 DE JULIO -->
-        <div class="relative
+        <div class="relative">
+          <div cl
